@@ -354,6 +354,68 @@ jobs:
           heroku_app_name: ${{ env.HEROKU_APP }}
           heroku_email: bjoern.kimminich@owasp.org
           branch: ${{ env.HEROKU_BRANCH }}
+ sast:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check out Git repository"
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
+
+      - name: "Install SonarQube Scanner"
+        run: |
+          # Install and configure SonarQube Scanner
+          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.0.2311-linux.zip
+          unzip sonar-scanner-cli-4.6.0.2311-linux.zip
+          export PATH="$PATH:$PWD/sonar-scanner-cli-4.6.0.2311-linux/bin"
+
+      - name: "Run SonarQube Analysis"
+        run: sonar-scanner -Dsonar.host.url=<your-sonarqube-url> -Dsonar.login=<sonarqube-token>
+
+      - name: "Interpret SonarQube Report       
+        run: |
+           echo "Parsing and interpreting SonarQube report"
+
+  dast:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Check out Git repository"
+        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
+
+
+      - name: "Install OWASP ZAP"
+        run: |
+          # Install and configure OWASP ZAP
+          wget https://github.com/zaproxy/zaproxy/releases/download/v2.11.0/ZAP_2.11.0_Linux.tar.gz
+          tar -xvf ZAP_2.11.0_Linux.tar.gz
+          export PATH="$PATH:$PWD/ZAP_2.11.0_Linux"
+
+      - name: "Run OWASP ZAP Scan"
+        run: zap-baseline.py -t <your-application-url> -r report.html
+
+      - name: "Interpret OWASP ZAP Report"
+        run: |
+            python3 -m pip install beautifulsoup4
+            python3 -m pip install lxml
+            python3 interpret_zap_report.py report.html > interpreted_report.txt
+            cat interpreted_report.txt
+
+
+  generate-reports:
+    needs:
+      - sast
+      - dast
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Generate Combined Report"
+        run: |
+             # Logic to combine and generate an output report from interpreted SAST and DAST reports
+             # Your report generation logic here
+             # Example Logic:
+             # 1. Retrieve interpreted SAST report data
+             # 2. Retrieve interpreted DAST report data
+             # 3. Combine and merge data from both reports
+             # 4. Format and generate a comprehensive output report
+             # 5. Save or upload the combined report
+             echo "Generating combined report from interpreted SAST and DAST reports..."
   notify-slack:
     if: github.repository == 'juice-shop/juice-shop' && github.event_name == 'push' && (success() || failure())
     needs:
