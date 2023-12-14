@@ -354,7 +354,7 @@ jobs:
           heroku_app_name: ${{ env.HEROKU_APP }}
           heroku_email: bjoern.kimminich@owasp.org
           branch: ${{ env.HEROKU_BRANCH }}
- sast:
+  sast:
     runs-on: ubuntu-latest
     steps:
       - name: "Check out Git repository"
@@ -370,9 +370,9 @@ jobs:
       - name: "Run SonarQube Analysis"
         run: sonar-scanner -Dsonar.host.url=<your-sonarqube-url> -Dsonar.login=<sonarqube-token>
 
-      - name: "Interpret SonarQube Report       
+      - name: "Interpret SonarQube Report"       
         run: |
-           echo "Parsing and interpreting SonarQube report"
+          echo "Parsing and interpreting SonarQube report"
 
   dast:
     runs-on: ubuntu-latest
@@ -407,21 +407,21 @@ jobs:
     steps:
       - name: "Generate Combined Report"
         run: |
-       # Retrieve interpreted SAST report data
-       # Replace this command with the logic to access and store SAST report data
-       # For example, assuming SAST report is stored in a file named sast_report.json
-             wget -O sast_report.json <URL_TO_SAST_REPORT>
-       # Retrieve interpreted DAST report data
-       # Replace this command with the logic to access and store DAST report data
-       # For example, assuming DAST report is stored in a file named dast_report.json
-            wget -O dast_report.json <URL_TO_DAST_REPORT>
-        # Merge and combine data from both reports
-        cat sast_report.json dast_report.json > combined_report.json
-        echo "Combined Security Report" > formatted_report.txt
-        echo "=========================" >> formatted_report.txt
-        cat combined_report.json >> formatted_report.txt
-        mkdir -p reports
-        mv formatted_report.txt reports/
+         # Retrieve interpreted SAST report data
+         # Replace this command with the logic to access and store SAST report data
+         # For example, assuming SAST report is stored in a file named sast_report.json
+         wget -O sast_report.json $PATH:$PWD/sonar-scanner-cli-4.6.0.2311-linux/bin
+         # Retrieve interpreted DAST report data
+         # Replace this command with the logic to access and store DAST report data
+         # For example, assuming DAST report is stored in a file named dast_report.json
+         wget -O dast_report.json <URL_TO_DAST_REPORT>
+         # Merge and combine data from both reports
+         cat sast_report.json dast_report.json > combined_report.json
+         echo "Combined Security Report" > formatted_report.txt
+         echo "=========================" >> formatted_report.txt
+         cat combined_report.json >> formatted_report.txt
+         mkdir -p reports
+         mv formatted_report.txt reports/
 
   notify-slack:
     if: github.repository == 'juice-shop/juice-shop' && github.event_name == 'push' && (success() || failure())
