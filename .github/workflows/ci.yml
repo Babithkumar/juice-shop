@@ -354,25 +354,7 @@ jobs:
           heroku_app_name: ${{ env.HEROKU_APP }}
           heroku_email: bjoern.kimminich@owasp.org
           branch: ${{ env.HEROKU_BRANCH }}
-  sast:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Check out Git repository"
-        uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac #v4.0.0
-
-      - name: "Install SonarQube Scanner"
-        run: |
-          # Install and configure SonarQube Scanner
-          wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.0.2311-linux.zip
-          unzip sonar-scanner-cli-4.6.0.2311-linux.zip
-          export PATH="$PATH:$PWD/sonar-scanner-cli-4.6.0.2311-linux/bin"
-
-      - name: "Run SonarQube Analysis"
-        run: ./sonar-scanner-cli-4.6.0.2311-linux/bin -Dsonar.host.url=http://35.154.219.194:9000/-Dsonar.login=466d22003b1055af1a1698c19e37921120452e93
-
-      - name: "Interpret SonarQube Report"       
-        run: |
-          echo "Parsing and interpreting SonarQube report"
+  
 
   dast:
     runs-on: ubuntu-latest
