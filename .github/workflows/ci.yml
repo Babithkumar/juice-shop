@@ -368,8 +368,7 @@ jobs:
           export PATH="$PATH:$PWD/sonar-scanner-cli-4.6.0.2311-linux/bin"
 
       - name: "Run SonarQube Analysis"
-        run: sonar-scanner -Dsonar.host.url=<your-sonarqube-url> -Dsonar.login=<sonarqube-token>
-
+        run: sonar-scanner -Dsonar.host.url=http://35.154.219.194:9000/-Dsonar.login=466d22003b1055af1a1698c19e37921120452e93
       - name: "Interpret SonarQube Report"       
         run: |
           echo "Parsing and interpreting SonarQube report"
